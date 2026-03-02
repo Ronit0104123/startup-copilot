@@ -1,14 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import { analyzeIdea } from './services/llm.js';
 import { createStartupAgent, runAgentWithProgress } from './agents/startupAgent.js';
 import { runWithTools } from './agents/toolAgent.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(__dirname, '..', '.env') });
+dotenv.config();
 
 console.log('Groq API Key loaded:', process.env.GROQ_API_KEY ? 'Yes' : 'No');
 
