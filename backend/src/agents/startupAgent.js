@@ -35,7 +35,7 @@ async function analyzeNode(state) {
   const response = await getModel().invoke([
     {
       role: "system",
-      content: `You are a startup advisor. Analyze startup ideas concisely.
+      content: `You are a startup advisor. Analyze startup ideas concisely. Analyze it wrt Indian market if nothing else is specified.
       
 IMPORTANT: Respond ONLY with valid JSON, no markdown, no explanation, no code blocks.
 
@@ -68,7 +68,7 @@ async function competitorNode(state) {
   const response = await getModel().invoke([
     {
       role: "system",
-      content: `You are a market research analyst. Find competitors for a startup idea.
+      content: `You are a market research analyst. Find competitors for a startup idea. Find wrt Indian market if nothing else is specified.
 
 IMPORTANT: Respond ONLY with valid JSON, no markdown, no code blocks.
 
