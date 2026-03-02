@@ -9,6 +9,21 @@ dotenv.config();
 
 console.log('Groq API Key loaded:', process.env.GROQ_API_KEY ? 'Yes' : 'No');
 
+// Helper to create user-friendly error messages
+function getFriendlyErrorMessage(error) {
+    const msg = error.message || '';
+    if (msg.includes('rate_limit') || msg.includes('Rate limit') || msg.includes('429')) {
+        return "We're experiencing high demand right now. Please try again in a few minutes.";
+    }
+    if (msg.includes('API key') || msg.includes('authentication') || msg.includes('401')) {
+        return "Service temporarily unavailable. Please try again later.";
+    }
+    if (msg.includes('timeout') || msg.includes('ETIMEDOUT')) {
+        return "The request took too long. Please try again.";
+    }
+    return "Something went wrong. Please try again.";
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -35,7 +50,7 @@ app.post('/api/analyze', async (req, res) => {
         res.status(200).json({ analysis: result });
     } catch (error) {
         console.error('AI Error:', error.message);
-        res.status(500).json({ error: "Failed to analyze idea", details: error.message });
+        res.status(500).json({ error: getFriendlyErrorMessage(error) });
     }
 });
 
@@ -56,7 +71,7 @@ app.post('/api/agent', async (req, res) => {
     } catch (error) {
         console.error('Agent Error:', error.message);
         console.error('Full error:', error);
-        res.status(500).json({ error: "Agent failed", details: error.message });
+        res.status(500).json({ error: getFriendlyErrorMessage(error) });
     }
 });
 
@@ -83,7 +98,7 @@ app.get('/api/agent/stream', async (req, res) => {
         res.end();
     } catch (error) {
         console.error('Streaming Agent Error:', error.message);
-        res.write(`data: ${JSON.stringify({ type: 'error', message: error.message })}\n\n`);
+        res.write(`data: ${JSON.stringify({ type: 'error', message: getFriendlyErrorMessage(error) })}\n\n`);
         res.end();
     }
 });
@@ -103,7 +118,7 @@ app.post('/api/tools', async (req, res) => {
     } catch (error) {
         console.error('Tool Agent Error:', error.message);
         console.error('Full error:', error);
-        res.status(500).json({ error: "Tool agent failed", details: error.message });
+        res.status(500).json({ error: getFriendlyErrorMessage(error) });
     }
 });
 
