@@ -15,6 +15,10 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({ status: 'ok', message: 'Startup Copilot API' });
+});
+
 app.post('/api/analyze', async (req, res) => {
     const idea = req.body.idea;
     
