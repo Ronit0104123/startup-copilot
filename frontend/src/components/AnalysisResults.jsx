@@ -2,6 +2,19 @@ import { useState } from 'react'
 
 function AnalysisResults({ idea, results, analysisType }) {
   const [activeTab, setActiveTab] = useState(0)
+  const [checkedItems, setCheckedItems] = useState(new Set())
+  
+  const toggleCheckItem = (itemId) => {
+    setCheckedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId)
+      } else {
+        newSet.add(itemId)
+      }
+      return newSet
+    })
+  }
   
   // Helper to safely parse JSON strings
   const parseData = (data) => {
@@ -251,50 +264,82 @@ function AnalysisResults({ idea, results, analysisType }) {
                   {checklist.week1 && (
                     <div className="checklist-group">
                       <h5>📅 Week 1</h5>
-                      {checklist.week1.map((item, i) => (
-                        <div key={i} className="checklist-item">
-                          <span className="checkbox">☐</span>
-                          <span>{item.task || item.action || item.title || item}</span>
-                          {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                          {item.category && <span className="category-tag">{item.category}</span>}
-                        </div>
-                      ))}
+                      {checklist.week1.map((item, i) => {
+                        const itemId = `week1-${i}`
+                        const isChecked = checkedItems.has(itemId)
+                        return (
+                          <div 
+                            key={i} 
+                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                            onClick={() => toggleCheckItem(itemId)}
+                          >
+                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                            <span>{item.task || item.action || item.title || item}</span>
+                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                            {item.category && <span className="category-tag">{item.category}</span>}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   {checklist.week2to4 && (
                     <div className="checklist-group">
                       <h5>📅 Weeks 2-4</h5>
-                      {checklist.week2to4.map((item, i) => (
-                        <div key={i} className="checklist-item">
-                          <span className="checkbox">☐</span>
-                          <span>{item.task || item.action || item.title || item}</span>
-                          {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                          {item.category && <span className="category-tag">{item.category}</span>}
-                        </div>
-                      ))}
+                      {checklist.week2to4.map((item, i) => {
+                        const itemId = `week2to4-${i}`
+                        const isChecked = checkedItems.has(itemId)
+                        return (
+                          <div 
+                            key={i} 
+                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                            onClick={() => toggleCheckItem(itemId)}
+                          >
+                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                            <span>{item.task || item.action || item.title || item}</span>
+                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                            {item.category && <span className="category-tag">{item.category}</span>}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   {checklist.month2to3 && (
                     <div className="checklist-group">
                       <h5>📅 Months 2-3</h5>
-                      {checklist.month2to3.map((item, i) => (
-                        <div key={i} className="checklist-item">
-                          <span className="checkbox">☐</span>
-                          <span>{item.task || item.action || item.title || item}</span>
-                          {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                          {item.category && <span className="category-tag">{item.category}</span>}
-                        </div>
-                      ))}
+                      {checklist.month2to3.map((item, i) => {
+                        const itemId = `month2to3-${i}`
+                        const isChecked = checkedItems.has(itemId)
+                        return (
+                          <div 
+                            key={i} 
+                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                            onClick={() => toggleCheckItem(itemId)}
+                          >
+                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                            <span>{item.task || item.action || item.title || item}</span>
+                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                            {item.category && <span className="category-tag">{item.category}</span>}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   {!checklist.week1 && !checklist.week2to4 && !checklist.month2to3 && (
-                    (checklist.items || checklist.tasks || (Array.isArray(checklist) ? checklist : []))?.map?.((item, i) => (
-                      <div key={i} className="checklist-item">
-                        <span className="checkbox">☐</span>
-                        <span>{typeof item === 'object' ? (item.task || item.action || item.title) : item}</span>
-                        {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                      </div>
-                    ))
+                    (checklist.items || checklist.tasks || (Array.isArray(checklist) ? checklist : []))?.map?.((item, i) => {
+                      const itemId = `item-${i}`
+                      const isChecked = checkedItems.has(itemId)
+                      return (
+                        <div 
+                          key={i} 
+                          className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                          onClick={() => toggleCheckItem(itemId)}
+                        >
+                          <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                          <span>{typeof item === 'object' ? (item.task || item.action || item.title) : item}</span>
+                          {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                        </div>
+                      )
+                    })
                   )}
                 </div>
               )}
