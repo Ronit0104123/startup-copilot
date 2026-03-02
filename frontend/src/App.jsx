@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { Analytics } from '@vercel/analytics/react'
 import IdeaForm from './components/IdeaForm'
 import AnalysisResults from './components/AnalysisResults'
 import { analyzeIdea, analyzeIdeaWithProgress } from './services/api'
@@ -146,7 +145,6 @@ function App() {
       <footer>
         <p>Made for founders who move fast 🚀</p>
       </footer>
-      <Analytics />
     </div>
   )
 }
