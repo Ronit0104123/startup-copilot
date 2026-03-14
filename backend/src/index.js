@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { analyzeIdea } from './services/llm.js';
 import { createStartupAgent, runAgentWithProgress } from './agents/startupAgent.js';
 import { runWithTools } from './agents/toolAgent.js';
+import { createGoogleSlidesPresentation } from './services/googleSlides.js';
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.json({ status: 'ok', message: 'Startup Copilot API' });
+    res.json({ status: 'ok', message: 'JustExecute API' });
 });
 
 app.post('/api/analyze', async (req, res) => {
@@ -104,6 +105,39 @@ app.post('/api/tools', async (req, res) => {
         console.error('Tool Agent Error:', error.message);
         console.error('Full error:', error);
         res.status(500).json({ error: "Tool agent failed", details: error.message });
+    }
+});
+
+app.post('/api/create-slides', async (req, res) => {
+    const { pitchDeck, idea } = req.body;
+    
+    if (!pitchDeck || !idea) {
+        return res.status(400).json({ error: "Pitch deck data and idea are required" });
+    }
+    
+    try {
+        console.log('📊 Creating Google Slides for:', idea);
+        const result = await createGoogleSlidesPresentation(pitchDeck, idea);
+        
+        if (result.success) {
+            res.status(200).json({
+                success: true,
+                htmlContent: result.htmlContent,
+                importInstructions: result.importInstructions
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                error: result.error
+            });
+        }
+    } catch (error) {
+        console.error('Google Slides Error:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: "Failed to create Google Slides presentation",
+            details: error.message 
+        });
     }
 });
 

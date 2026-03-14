@@ -1,8 +1,9 @@
 {
-  "name": "backend",
+  "name": "justexecute-backend",
   "version": "1.0.0",
   "type": "module",
   "main": "src/index.js",
+  "description": "JustExecute - AI-powered startup analysis and presentation generator",
   "engines": {
     "node": ">=18.0.0"
   },
