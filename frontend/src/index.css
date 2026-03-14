@@ -1431,23 +1431,47 @@ header .tagline {
   gap: 0.75rem;
   padding: 0.85rem 1rem;
   background: rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
   border-radius: 10px;
   margin-bottom: 0.4rem;
   transition: all 0.2s;
+  cursor: pointer;
+  user-select: none;
 }
 
 .checklist-item:hover {
   background: rgba(0, 0, 0, 0.3);
 }
 
+.checklist-item.checked {
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.checklist-item.checked:hover {
+  background: rgba(0, 255, 136, 0.2);
+}
+
 .checklist-item .checkbox {
   font-size: 1.1rem;
   color: var(--primary);
+  transition: all 0.2s;
+}
+
+.checklist-item.checked .checkbox {
+  color: var(--accent);
+  font-weight: bold;
 }
 
 .checklist-item > span:nth-child(2) {
   flex: 1;
   font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.checklist-item.checked > span:nth-child(2) {
+  opacity: 0.7;
+  text-decoration: line-through;
 }
 
 .checklist-item .priority {

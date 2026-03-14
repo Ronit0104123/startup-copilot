@@ -2,6 +2,19 @@ import { useState } from 'react'
 
 function AnalysisResults({ idea, results, analysisType }) {
   const [activeTab, setActiveTab] = useState(0)
+  const [checkedItems, setCheckedItems] = useState(new Set())
+  
+  const toggleCheckItem = (itemId) => {
+    setCheckedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId)
+      } else {
+        newSet.add(itemId)
+      }
+      return newSet
+    })
+  }
   
   // Export pitch deck functionality  
   const exportPitchDeck = (format) => {
@@ -1204,44 +1217,84 @@ function AnalysisResults({ idea, results, analysisType }) {
               ) : (
                 <div className="analysis-grid">
                   {checklist.week1 && (
-                    <div className="analysis-card week1-actions">
-                      <h5>📅 Week 1 Priority Actions</h5>
-                      <ul>
-                        {checklist.week1.map((item, i) => (
-                          <li key={i}>{item.task || item.action || item.title || item}</li>
-                        ))}
-                      </ul>
+                    <div className="checklist-group">
+                      <h5>📅 Week 1</h5>
+                      {checklist.week1.map((item, i) => {
+                        const itemId = `week1-${i}`
+                        const isChecked = checkedItems.has(itemId)
+                        return (
+                          <div 
+                            key={i} 
+                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                            onClick={() => toggleCheckItem(itemId)}
+                          >
+                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                            <span>{item.task || item.action || item.title || item}</span>
+                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                            {item.category && <span className="category-tag">{item.category}</span>}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   {checklist.week2to4 && (
-                    <div className="analysis-card week2to4-actions">
-                      <h5>📅 Weeks 2-4 Follow-up Actions</h5>
-                      <ul>
-                        {checklist.week2to4.map((item, i) => (
-                          <li key={i}>{item.task || item.action || item.title || item}</li>
-                        ))}
-                      </ul>
+                    <div className="checklist-group">
+                      <h5>📅 Weeks 2-4</h5>
+                      {checklist.week2to4.map((item, i) => {
+                        const itemId = `week2to4-${i}`
+                        const isChecked = checkedItems.has(itemId)
+                        return (
+                          <div 
+                            key={i} 
+                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                            onClick={() => toggleCheckItem(itemId)}
+                          >
+                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                            <span>{item.task || item.action || item.title || item}</span>
+                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                            {item.category && <span className="category-tag">{item.category}</span>}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   {checklist.month2to3 && (
-                    <div className="analysis-card monthly-actions">
-                      <h5>📆 Months 2-3 Strategic Actions</h5>
-                      <ul>
-                        {checklist.month2to3.map((item, i) => (
-                          <li key={i}>{item.task || item.action || item.title || item}</li>
-                        ))}
-                      </ul>
+                    <div className="checklist-group">
+                      <h5>📅 Months 2-3</h5>
+                      {checklist.month2to3.map((item, i) => {
+                        const itemId = `month2to3-${i}`
+                        const isChecked = checkedItems.has(itemId)
+                        return (
+                          <div 
+                            key={i} 
+                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                            onClick={() => toggleCheckItem(itemId)}
+                          >
+                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                            <span>{item.task || item.action || item.title || item}</span>
+                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                            {item.category && <span className="category-tag">{item.category}</span>}
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                   {!checklist.week1 && !checklist.week2to4 && !checklist.month2to3 && (
-                    <div className="analysis-card general-actions">
-                      <h5>📋 Action Items</h5>
-                      <ul>
-                        {(checklist.items || checklist.tasks || (Array.isArray(checklist) ? checklist : []))?.map?.((item, i) => (
-                          <li key={i}>{typeof item === 'object' ? (item.task || item.action || item.title) : item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                    (checklist.items || checklist.tasks || (Array.isArray(checklist) ? checklist : []))?.map?.((item, i) => {
+                      const itemId = `item-${i}`
+                      const isChecked = checkedItems.has(itemId)
+                      return (
+                        <div 
+                          key={i} 
+                          className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                          onClick={() => toggleCheckItem(itemId)}
+                        >
+                          <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                          <span>{typeof item === 'object' ? (item.task || item.action || item.title) : item}</span>
+                          {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                        </div>
+                      )
+                    })
                   )}
                 </div>
               )}
