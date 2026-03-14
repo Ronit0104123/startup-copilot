@@ -5,6 +5,8 @@
 }
 
 :root {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --primary: #00d9ff;
   --secondary: #8b5cf6;
   --accent: #00ff88;
@@ -20,7 +22,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg-dark);
   background-image: 
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.15), transparent),
@@ -28,6 +30,30 @@ body {
   min-height: 100vh;
   color: var(--text);
   line-height: 1.6;
+  letter-spacing: -0.01em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+button,
+.submit-btn,
+.tab-button,
+.analysis-card-title,
+.section-label,
+.metric-value,
+.stat-value {
+  font-family: var(--font-display);
 }
 
 .app {
@@ -542,6 +568,325 @@ header .tagline {
   padding: 0.5rem 0;
 }
 
+/* Enhanced verdict styles */
+.analysis-card.verdict.go {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+.analysis-card.verdict.nogo {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.1));
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.analysis-card.verdict.pivotrequired {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.verdict-reason {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-style: italic;
+}
+
+/* ============ ENHANCED ANALYSIS COMPONENTS ============ */
+.analysis-card.summary-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.05));
+  border-color: rgba(99, 102, 241, 0.3);
+  order: -3; /* Display first */
+}
+
+.analysis-card.market-analysis {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.analysis-card.competitive-reality {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.analysis-card.business-model {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Competitors Tab Styling */
+.analysis-card.market-dominance {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(126, 34, 206, 0.05));
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.analysis-card.competitors-analysis {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.analysis-card.failed-attempts {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(75, 85, 99, 0.05));
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+.analysis-card.big-tech-threat {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.analysis-card.big-tech-threat.high-risk {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.analysis-card.big-tech-threat.low-risk {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.market-insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.analysis-card.market-gap {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.analysis-card.entry-strategy {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(126, 34, 206, 0.05));
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.analysis-card.indirect-competitors {
+  background: linear-gradient(135deg, rgba(156, 163, 175, 0.1), rgba(107, 114, 128, 0.05));
+  border-color: rgba(156, 163, 175, 0.3);
+}
+
+/* GTM Strategy Tab Styling */
+.analysis-card.target-audience {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.05));
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.analysis-card.value-proposition {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(126, 34, 206, 0.05));
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.analysis-card.pricing-strategy {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.analysis-card.marketing-channels {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.analysis-card.launch-strategy {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.analysis-card.key-metrics {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Risk Assessment Tab Styling */
+.analysis-card.mortality-overview {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.analysis-card.market-risks {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.analysis-card.execution-risks {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.analysis-card.competitive-threats {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.analysis-card.critical-assumptions {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(126, 34, 206, 0.05));
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.analysis-card.survival-strategy {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.analysis-card.death-spiral {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(75, 85, 99, 0.05));
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+.assumptions-strategy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Action Plan Tab Styling */
+.analysis-card.week1-actions {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.analysis-card.week2to4-actions {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.analysis-card.monthly-actions {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.analysis-card.general-actions {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(126, 34, 206, 0.05));
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.strengths-challenges-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.analysis-card.strengths {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.analysis-card.challenges {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.analysis-card.next-steps {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(126, 34, 206, 0.05));
+  border-color: rgba(147, 51, 234, 0.3);
+  grid-column: 1 / -1; /* Span full width */
+}
+
+.analysis-card.red-flags {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Verdict card styling priority */
+.analysis-card.verdict {
+  order: -2; /* Display second, after summary */
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 217, 255, 0.1));
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+/* Analysis grid layout improvements */
+.analysis-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ============ CONSISTENT CONTENT STYLING ============ */
+.competitors-list,
+.failures-list,
+.risks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.competitor-item,
+.failure-item,
+.risk-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid var(--primary);
+}
+
+.competitor-item h6,
+.failure-item h6,
+.risk-item h6 {
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.competitor-detail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0;
+}
+
+.threat-level {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.threat-level:contains("HIGH") {
+  background: rgba(239, 68, 68, 0.2);
+  color: #EF4444;
+}
+
+.threat-level:contains("MEDIUM") {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+}
+
+.threat-level:contains("LOW") {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22C55E;
+}
+
+@media (max-width: 768px) {
+  .strengths-redflag-grid,
+  .strengths-challenges-grid,
+  .market-insights-grid,
+  .assumptions-strategy-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .failure-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .analysis-card.next-steps {
+    grid-column: 1;
+  }
+  
+  .risks-list .risk-item,
+  .competitors-list .competitor-item,
+  .failures-list .failure-item {
+    padding: 0.75rem;
+  }
+}
+
 /* ============ TOOLS RESULTS ============ */
 .tools-info {
   margin-bottom: 1.25rem;
@@ -894,6 +1239,171 @@ header .tagline {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   font-size: 0.9rem;
+}
+
+/* ============ ENHANCED MORTALITY ANALYSIS ============ */
+.mortality-overview {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 127, 0.05));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.mortality-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.mortality-score .score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #EF4444;
+  text-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.mortality-score .score-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.primary-death-risk {
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.risk-category {
+  margin-bottom: 2rem;
+}
+
+.risk-category h6 {
+  color: var(--primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.enhanced-risk-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.enhanced-risk-card:hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.enhanced-risk-card.market {
+  border-left: 4px solid #3B82F6;
+}
+
+.enhanced-risk-card.execution {
+  border-left: 4px solid #F59E0B;
+}
+
+.enhanced-risk-card.competitive {
+  border-left: 4px solid #EF4444;
+}
+
+.enhanced-risk-card .risk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.enhanced-risk-card .probability,
+.enhanced-risk-card .timeline {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.enhanced-risk-card .impact,
+.enhanced-risk-card .mitigation,
+.enhanced-risk-card .testable,
+.enhanced-risk-card .early-warning,
+.enhanced-risk-card .defensibility,
+.enhanced-risk-card .response {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.critical-assumptions {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.critical-assumptions h6 {
+  color: #F59E0B;
+  margin-bottom: 1rem;
+}
+
+.critical-assumptions ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.assumption {
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.death-spiral {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(75, 85, 99, 0.05));
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.death-spiral h6 {
+  color: #6B7280;
+  margin-bottom: 1rem;
+}
+
+.spiral-description {
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.survival-strategy {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.survival-strategy h6 {
+  color: #22C55E;
+  margin-bottom: 1rem;
+}
+
+.strategy-description {
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 /* ============ CHECKLIST SECTION ============ */
@@ -1703,4 +2213,405 @@ footer a:hover {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-dim);
+}
+
+/* ============ PITCH DECK STYLES ============ */
+.pitch-deck-tab {
+  background: transparent !important;
+}
+
+.pitch-deck-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 100%;
+}
+
+.pitch-deck-header {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.08), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pitch-deck-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+}
+
+.pitch-deck-header h3 {
+  color: var(--primary);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pitch-summary {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.08), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pitch-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.summary-header h4 {
+  color: var(--primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.export-options {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.export-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.export-btn.google-slides {
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+}
+
+.export-btn.google-slides:hover {
+  box-shadow: 0 4px 16px rgba(66, 133, 244, 0.4);
+}
+
+.export-btn.pdf {
+  background: linear-gradient(135deg, var(--danger), #ff8a80);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.export-btn.pdf:hover {
+  box-shadow: 0 4px 16px rgba(255, 107, 107, 0.4);
+}
+
+.summary-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0;
+}
+
+.slides-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.slide {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.slide:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 217, 255, 0.4);
+}
+
+.slide-header-bar {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-header-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+  transform: skewX(-15deg);
+}
+
+.slide-num {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-width: 2.5rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.slide-title {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.slide-indicator {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.slide-body {
+  padding: 2rem;
+}
+
+.slide-headline h4 {
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.4;
+}
+
+.slide-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.content-block {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.content-block:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(0, 217, 255, 0.3);
+}
+
+.content-block.highlight {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.06), rgba(139, 92, 246, 0.06));
+  border-color: var(--primary);
+}
+
+.content-block.full-width {
+  grid-column: 1 / -1;
+}
+
+.content-block h5 {
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.content-block ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.content-block li {
+  background: rgba(0, 217, 255, 0.05);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border-left: 3px solid var(--primary);
+  border-radius: 0 8px 8px 0;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  position: relative;
+}
+
+.content-block li::before {
+  content: '→';
+  color: var(--primary);
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.content-block p {
+  color: var(--text);
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.market-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary);
+}
+
+.metric-card.tam::before { background: var(--primary); }
+.metric-card.sam::before { background: var(--secondary); }
+.metric-card.som::before { background: var(--accent); }
+
+.metric-card h5 {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metric-card p {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pitch-deck-container {
+    gap: 1.5rem;
+  }
+  
+  .pitch-deck-header {
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .pitch-deck-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .pitch-summary {
+    padding: 1.5rem;
+  }
+  
+  .summary-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .export-options {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .export-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .slide-header-bar {
+    padding: 1rem 1.5rem;
+  }
+  
+  .slide-title {
+    font-size: 1.2rem;
+  }
+  
+  .slide-body {
+    padding: 1.5rem;
+  }
+  
+  .slide-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .market-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .content-block {
+    padding: 1rem;
+  }
 }

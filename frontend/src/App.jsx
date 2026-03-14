@@ -78,7 +78,7 @@ function App() {
         <div className="logo-wrapper">
           <span className="logo-icon">🚀</span>
         </div>
-        <h1>Startup Copilot</h1>
+        <h1>JustExecute</h1>
         <p className="tagline">Turn your startup idea into an actionable plan in seconds</p>
         <div className="value-props">
           <span className="value-prop">✓ Competitor analysis</span>

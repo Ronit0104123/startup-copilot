@@ -1,4 +1,4 @@
-# Startup Copilot
+# JustExecute
 
 Analyze startup ideas with AI. Get competitor research, GTM strategy, risks, and action plans.
 
