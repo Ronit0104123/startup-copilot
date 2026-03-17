@@ -5,6 +5,7 @@ import { analyzeIdea } from './services/llm.js';
 import { createStartupAgent, runAgentWithProgress } from './agents/startupAgent.js';
 import { runWithTools } from './agents/toolAgent.js';
 import { createGoogleSlidesPresentation } from './services/googleSlides.js';
+import { requireAuth, incrementUsage } from './middleware/auth.js';
 
 dotenv.config();
 
@@ -39,7 +40,7 @@ app.get('/', (req, res) => {
     res.json({ status: 'ok', message: 'JustExecute API' });
 });
 
-app.post('/api/analyze', async (req, res) => {
+app.post('/api/analyze', requireAuth, async (req, res) => {
     const idea = req.body.idea;
     
     if (!idea) {
@@ -48,6 +49,7 @@ app.post('/api/analyze', async (req, res) => {
     
     try {
         const result = await analyzeIdea(idea);
+        await incrementUsage(req.user.id);
         res.status(200).json({ analysis: result });
     } catch (error) {
         console.error('AI Error:', error.message);
@@ -55,7 +57,7 @@ app.post('/api/analyze', async (req, res) => {
     }
 });
 
-app.post('/api/agent', async (req, res) => {
+app.post('/api/agent', requireAuth, async (req, res) => {
     const idea = req.body.idea;
     
     if (!idea) {
@@ -67,6 +69,7 @@ app.post('/api/agent', async (req, res) => {
         const agent = createStartupAgent();
         const result = await agent.invoke({ idea });
         
+        await incrementUsage(req.user.id);
         console.log('✅ Agent completed');
         res.status(200).json(result);
     } catch (error) {
@@ -76,7 +79,7 @@ app.post('/api/agent', async (req, res) => {
     }
 });
 
-app.get('/api/agent/stream', async (req, res) => {
+app.get('/api/agent/stream', requireAuth, async (req, res) => {
     const idea = req.query.idea;
     
     if (!idea) {
@@ -95,6 +98,7 @@ app.get('/api/agent/stream', async (req, res) => {
         const result = await runAgentWithProgress(idea, (progress) => {
             res.write(`data: ${JSON.stringify({ type: 'progress', ...progress })}\n\n`);
         });
+        await incrementUsage(req.user.id);
         res.write(`data: ${JSON.stringify({ type: 'complete', result })}\n\n`);
         res.end();
     } catch (error) {
@@ -104,7 +108,7 @@ app.get('/api/agent/stream', async (req, res) => {
     }
 });
 
-app.post('/api/tools', async (req, res) => {
+app.post('/api/tools', requireAuth, async (req, res) => {
     const idea = req.body.idea;
     
     if (!idea) {
@@ -115,6 +119,7 @@ app.post('/api/tools', async (req, res) => {
         console.log('🔧 Starting Tool Agent for:', idea);
         const result = await runWithTools(idea);
         
+        await incrementUsage(req.user.id);
         res.status(200).json(result);
     } catch (error) {
         console.error('Tool Agent Error:', error.message);

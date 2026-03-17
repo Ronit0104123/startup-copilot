@@ -595,110 +595,97 @@ function AnalysisResults({ idea, results, analysisType }) {
   }
 
   const renderAgentResults = () => {
-    const analysis = parseData(results.analysis)
+    // 5 New Sections from the consolidated backend
+    const marketValidation = parseData(results.marketValidation)
     const competitors = parseData(results.competitors)
-    const gtm = parseData(results.gtmPlan)
-    const pitchDeck = parseData(results.pitchDeck)
-    const risk = parseData(results.riskAssessment)
-    const checklist = parseData(results.checklist)
+    const gtmStrategy = parseData(results.gtmStrategy)
+    const risks = parseData(results.risks)
+    const executionPlan = parseData(results.executionPlan)
 
     const tabs = [
-      { id: 0, label: 'Analysis', icon: '📊', color: 'primary' },
+      { id: 0, label: 'Market Validation', icon: '🔬', color: 'accent' },
       { id: 1, label: 'Competitors', icon: '🎯', color: 'pink' },
       { id: 2, label: 'GTM Strategy', icon: '🚀', color: 'warning' },
-      { id: 3, label: 'Pitch Deck', icon: '🎯', color: 'success' },
-      { id: 4, label: 'Risks', icon: '⚠️', color: 'danger' },
-      { id: 5, label: 'Action Plan', icon: '✅', color: 'accent' },
+      { id: 3, label: 'Risks', icon: '⚠️', color: 'danger' },
+      { id: 4, label: 'Execution', icon: '✅', color: 'success' },
     ]
 
     const renderTabContent = () => {
       switch (activeTab) {
         case 0:
-          return analysis && (
-            <div className="tab-content">
-              {typeof analysis === 'string' ? (
-                <p>{analysis}</p>
+          return marketValidation && (
+            <div className="tab-content validation-results">
+              {typeof marketValidation === 'string' ? (
+                <p>{marketValidation}</p>
               ) : (
-                <div className="analysis-grid">
-                  {/* Summary */}
-                  {analysis.summary && (
-                    <div className="analysis-card summary-card">
-                      <h5>📋 Executive Summary</h5>
-                      <p>{analysis.summary}</p>
+                <div className="validation-grid">
+                  <div className="summary-card">
+                    <h5>📈 Market Opportunity</h5>
+                    <p>{marketValidation.summary}</p>
+                  </div>
+                  
+                  {marketValidation.demandScore && (
+                    <div className="demand-score-header">
+                      <p className="text-sm text-gray-400 uppercase tracking-wider mb-2 font-bold">Demand Verdict</p>
+                      <div className={`score-badge verdict-${marketValidation.demandScore.overallVerdict.toLowerCase().includes('strong') ? 'strong' : marketValidation.demandScore.overallVerdict.toLowerCase().includes('weak') ? 'weak' : 'moderate'}`}>
+                        {marketValidation.demandScore.overallVerdict}
+                      </div>
+                      <p className="recommendation mt-4"><strong>Recommendation:</strong> {marketValidation.demandScore.recommendation}</p>
                     </div>
                   )}
 
-                  {/* Verdict - prominently displayed */}
-                  {analysis.verdict && (
-                    <div className={`analysis-card verdict ${analysis.verdict.toLowerCase().replace('-', '').replace('_', '')}`}>
-                      <h5>🎯 Investment Verdict</h5>
-                      <p className="verdict-text">{analysis.verdict}</p>
-                      {analysis.verdictReason && <p className="verdict-reason"><strong>Analysis:</strong> {analysis.verdictReason}</p>}
+                  <div className="signal-sections">
+                    <div className="signal-section main-insights">
+                      <h4>📊 Market Data</h4>
+                      {marketValidation.marketAnalysis && (
+                        <div className="stats-grid">
+                          <div className="stat-box">
+                            <span className="stat-label">TAM</span>
+                            <span className="stat-value">{marketValidation.marketAnalysis.tamSize}</span>
+                          </div>
+                          {marketValidation.marketAnalysis.growthRate && (
+                            <div className="stat-box">
+                              <span className="stat-label">Growth</span>
+                              <span className="stat-value">{marketValidation.marketAnalysis.growthRate}</span>
+                            </div>
+                          )}
+                          <div className="stat-box">
+                            <span className="stat-label">Pain Level</span>
+                            <span className="stat-value">{marketValidation.marketAnalysis.customerPain}/10</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
 
-                  {/* Market Analysis */}
-                  {analysis.marketAnalysis && (
-                    <div className="analysis-card market-analysis">
-                      <h5>📊 Market Assessment</h5>
-                      {analysis.marketAnalysis.tamSize && <p><strong>Market Size:</strong> {analysis.marketAnalysis.tamSize}</p>}
-                      {analysis.marketAnalysis.timingAnalysis && <p><strong>Market Timing:</strong> {analysis.marketAnalysis.timingAnalysis}</p>}
-                      {analysis.marketAnalysis.customerPain && <p><strong>Customer Pain Points:</strong> {analysis.marketAnalysis.customerPain}</p>}
-                      {analysis.marketAnalysis.monetizationEvidence && <p><strong>Revenue Evidence:</strong> {analysis.marketAnalysis.monetizationEvidence}</p>}
-                    </div>
-                  )}
-
-                  {/* Business Viability */}
-                  {analysis.businessViability && (
-                    <div className="analysis-card business-model">
-                      <h5>💰 Business Model</h5>
-                      {analysis.businessViability.revenueModel && <p><strong>Revenue Model:</strong> {analysis.businessViability.revenueModel}</p>}
-                      {analysis.businessViability.unitEconomics && <p><strong>Unit Economics:</strong> {analysis.businessViability.unitEconomics}</p>}
-                      {analysis.businessViability.scalingChallenges && <p><strong>Scaling Challenges:</strong> {analysis.businessViability.scalingChallenges}</p>}
-                    </div>
-                  )}
-
-                  {/* Competitive Reality */}
-                  {analysis.competitiveReality && (
-                    <div className="analysis-card competitive-reality">
-                      <h5>⚡ Competitive Landscape</h5>
-                      {analysis.competitiveReality.majorThreats && <p><strong>Major Threats:</strong> {analysis.competitiveReality.majorThreats}</p>}
-                      {analysis.competitiveReality.failurePatterns && <p><strong>Common Failures:</strong> {analysis.competitiveReality.failurePatterns}</p>}
-                      {analysis.competitiveReality.defensibilityScore && <p><strong>Defensibility:</strong> {analysis.competitiveReality.defensibilityScore}</p>}
-                    </div>
-                  )}
-
-                  {/* Strengths & Challenges Grid */}
-                  <div className="strengths-challenges-grid">
-                    {analysis.strengths && analysis.strengths.length > 0 && (
-                      <div className="analysis-card strengths">
-                        <h5>✅ Key Strengths</h5>
-                        {renderList(analysis.strengths)}
+                    {marketValidation.evidence && marketValidation.evidence.painSignals && marketValidation.evidence.painSignals.length > 0 && (
+                      <div className="signal-section pain-points">
+                        <h4>🔥 Real Pain Signals</h4>
+                        <div className="evidence-grid">
+                          {marketValidation.evidence.painSignals.map((signal, i) => (
+                            <div key={i} className="evidence-card">
+                              <span className="source-tag">{signal.source}</span>
+                              <p className="quote">"{signal.quote}"</p>
+                              {signal.painLevel && <span className={`intensity-tag ${signal.painLevel.toLowerCase()}`}>{signal.painLevel}</span>}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
-                    {analysis.challenges && analysis.challenges.length > 0 && (
-                      <div className="analysis-card challenges">
-                        <h5>⚠️ Critical Challenges</h5>
-                        {renderList(analysis.challenges)}
+                    
+                    {marketValidation.evidence && marketValidation.evidence.solutionSeeking && marketValidation.evidence.solutionSeeking.length > 0 && (
+                      <div className="signal-section seeking">
+                        <h4>🔍 Solution Seeking Behavior</h4>
+                        <div className="evidence-grid">
+                          {marketValidation.evidence.solutionSeeking.map((signal, i) => (
+                            <div key={i} className="evidence-card">
+                              <span className="source-tag">{signal.source}</span>
+                              <p className="quote">"{signal.query}"</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
-
-                  {/* Next Steps */}
-                  {analysis.nextSteps && analysis.nextSteps.length > 0 && (
-                    <div className="analysis-card next-steps">
-                      <h5>🚀 Recommended Actions</h5>
-                      {renderList(analysis.nextSteps)}
-                    </div>
-                  )}
-
-                  {/* Legacy backward compatibility fields */}
-                  {analysis.redFlags && analysis.redFlags.length > 0 && (
-                    <div className="analysis-card red-flags">
-                      <h5>🚨 Critical Red Flags</h5>
-                      {renderList(analysis.redFlags)}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -711,378 +698,116 @@ function AnalysisResults({ idea, results, analysisType }) {
                 <p>{competitors}</p>
               ) : (
                 <div className="analysis-grid">
-                  {/* Market Dominance Analysis */}
+                  {competitors.marketGap && (
+                    <div className="content-block full-width highlight">
+                      <h5>🎯 The Golden Opportunity</h5>
+                      <p>{competitors.marketGap}</p>
+                      {competitors.entryStrategy && <p className="mt-2"><strong>Wedge Strategy:</strong> {competitors.entryStrategy}</p>}
+                    </div>
+                  )}
+                  
                   {competitors.marketDominance && (
-                    <div className="analysis-card market-dominance">
+                    <div className="analysis-card market-leader">
                       <h5>👑 Market Dominance</h5>
-                      <p><strong>Market Leader:</strong> {competitors.marketDominance.leader}</p>
-                      {competitors.marketDominance.marketShare && <p><strong>Market Share:</strong> {competitors.marketDominance.marketShare}</p>}
-                      {competitors.marketDominance.moatStrength && <p><strong>Defensibility Score:</strong> {competitors.marketDominance.moatStrength}/10</p>}
-                    </div>
-                  )}
-
-                  {/* Enhanced Direct Competitors */}
-                  {competitors.directCompetitors && competitors.directCompetitors.length > 0 && (
-                    <div className="analysis-card competitors-analysis">
-                      <h5>🎯 Direct Competitors</h5>
-                      <div className="competitors-list">
-                        {competitors.directCompetitors.map((c, i) => (
-                          <div key={i} className="competitor-item">
-                            <h6>{c.name}</h6>
-                            <p>{c.description}</p>
-                            {c.funding && <p className="competitor-detail"><strong>Funding:</strong> {c.funding}</p>}
-                            {c.strengths && <p className="competitor-detail"><strong>Strengths:</strong> {c.strengths}</p>}
-                            {c.weaknesses && <p className="competitor-detail"><strong>Weaknesses:</strong> {c.weaknesses}</p>}
-                            {c.customerBase && <p className="competitor-detail"><strong>Customer Base:</strong> {c.customerBase}</p>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Failed Attempts Analysis */}
-                  {competitors.failedAttempts && competitors.failedAttempts.length > 0 && (
-                    <div className="analysis-card failed-attempts">
-                      <h5>💀 Failed Attempts</h5>
-                      <div className="failures-list">
-                        {competitors.failedAttempts.map((f, i) => (
-                          <div key={i} className="failure-item">
-                            <h6>{f.name}</h6>
-                            <p><strong>Why they failed:</strong> {f.failureReason}</p>
-                            <p><strong>Key lesson:</strong> {f.lessonLearned}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Big Tech Threat Assessment */}
-                  {competitors.bigTechThreat && (
-                    <div className={`analysis-card big-tech-threat ${competitors.bigTechThreat.riskLevel?.toLowerCase()}-risk`}>
-                      <h5>🏢 Big Tech Threat</h5>
-                      <p><strong>Risk Level:</strong> <span className="threat-level">{competitors.bigTechThreat.riskLevel}</span></p>
-                      {competitors.bigTechThreat.timeline && <p><strong>Expected Timeline:</strong> {competitors.bigTechThreat.timeline}</p>}
-                      {competitors.bigTechThreat.preventionStrategy && <p><strong>Defense Strategy:</strong> {competitors.bigTechThreat.preventionStrategy}</p>}
-                    </div>
-                  )}
-
-                  {/* Legacy indirect competitors for backward compatibility */}
-                  {competitors.indirectCompetitors && (
-                    <div className="competitor-group">
-                      <h5>🔄 Indirect Competitors</h5>
-                      <div className="competitor-cards">
-                        {competitors.indirectCompetitors.map((c, i) => (
-                          <div key={i} className="competitor-card indirect">
-                            <strong>{c.name}</strong>
-                            <p>{c.description}</p>
-                            {c.threat && <span className="tag threat">⚠️ {c.threat}</span>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Market Entry Strategy */}
-                  <div className="market-insights-grid">
-                    {competitors.marketGap && (
-                      <div className="analysis-card market-gap">
-                        <h5>🎯 Market Opportunity</h5>
-                        <p>{competitors.marketGap}</p>
-                      </div>
-                    )}
-                    {competitors.entryStrategy && (
-                      <div className="analysis-card entry-strategy">
-                        <h5>🚀 Entry Strategy</h5>
-                        <p>{competitors.entryStrategy}</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Legacy indirect competitors */}
-                  {competitors.indirectCompetitors && competitors.indirectCompetitors.length > 0 && (
-                    <div className="analysis-card indirect-competitors">
-                      <h5>🔄 Indirect Competitors</h5>
-                      <ul>
-                        {competitors.indirectCompetitors.map((c, i) => (
-                          <li key={i}><strong>{c.name}:</strong> {c.description} {c.threat && `(Threat: ${c.threat})`}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )
-        
-        case 2:
-          return gtm && (
-            <div className="tab-content">
-              {typeof gtm === 'string' ? (
-                <p>{gtm}</p>
-              ) : (
-                <div className="analysis-grid">
-                  {/* Target Audience */}
-                  {gtm.targetAudience && (
-                    <div className="analysis-card target-audience">
-                      <h5>🎯 Target Audience</h5>
-                      <p>{gtm.targetAudience}</p>
-                    </div>
-                  )}
-
-                  {/* Value Proposition */}
-                  {gtm.valueProposition && (
-                    <div className="analysis-card value-proposition">
-                      <h5>💎 Value Proposition</h5>
-                      <p>{gtm.valueProposition}</p>
-                    </div>
-                  )}
-
-                  {/* Pricing Strategy */}
-                  {gtm.pricing && (
-                    <div className="analysis-card pricing-strategy">
-                      <h5>💰 Pricing Strategy</h5>
-                      <p>{typeof gtm.pricing === 'object' ? gtm.pricing.model : gtm.pricing}</p>
-                      {gtm.pricing.tiers && (
-                        <ul>
-                          {gtm.pricing.tiers.map((tier, i) => (
-                            <li key={i}>{tier}</li>
-                          ))}
-                        </ul>
+                      {competitors.marketDominance.leader ? (
+                        <>
+                          <p><strong>Leader:</strong> {competitors.marketDominance.leader}</p>
+                          <p><strong>Share:</strong> {competitors.marketDominance.marketShare}</p>
+                          <p><strong>Moat Strength:</strong> {competitors.marketDominance.moatStrength}/10</p>
+                        </>
+                      ) : (
+                        <p>No clear market leader established yet.</p>
                       )}
                     </div>
                   )}
-
-                  {/* Marketing Channels */}
-                  {gtm.channels && (
-                    <div className="analysis-card marketing-channels">
-                      <h5>📢 Marketing Channels</h5>
-                      {Array.isArray(gtm.channels) ? (
-                        <ul>
-                          {gtm.channels.map((ch, i) => (
-                            <li key={i}>{typeof ch === 'object' ? `${ch.channel}: ${ch.strategy}` : ch}</li>
-                          ))}
-                        </ul>
-                      ) : <p>{gtm.channels}</p>}
+                  
+                  {competitors.bigTechThreat && (
+                    <div className="analysis-card big-tech">
+                      <h5>🦍 Big Tech Threat</h5>
+                      <p><strong>Risk:</strong> <span className={`risk-badge ${competitors.bigTechThreat.riskLevel?.toLowerCase()}`}>{competitors.bigTechThreat.riskLevel}</span></p>
+                      <p><strong>Timeline:</strong> {competitors.bigTechThreat.timeline}</p>
+                      <p><strong>Defense:</strong> {competitors.bigTechThreat.preventionStrategy}</p>
                     </div>
                   )}
 
-                  {/* Launch Strategy */}
-                  {gtm.launchStrategy && (
-                    <div className="analysis-card launch-strategy">
-                      <h5>🚀 Launch Strategy</h5>
-                      <p>{gtm.launchStrategy}</p>
+                  {competitors.directCompetitors && competitors.directCompetitors.length > 0 && (
+                    <div className="competitors-list full-width mt-4">
+                      <h5>⚔️ Existing Solutions</h5>
+                      {competitors.directCompetitors.map((comp, i) => (
+                        <div key={i} className="competitor-card">
+                          <div className="comp-header">
+                            <strong>{comp.name}</strong>
+                            {comp.pricing && <span className="pricing-tag">{comp.pricing}</span>}
+                          </div>
+                          <p className="desc">{comp.description}</p>
+                          {comp.weaknesses && <p className="weakness"><strong>Vulnerability:</strong> {comp.weaknesses}</p>}
+                        </div>
+                      ))}
                     </div>
                   )}
 
-                  {/* Key Metrics */}
-                  {gtm.metrics && gtm.metrics.length > 0 && (
-                    <div className="analysis-card key-metrics">
-                      <h5>📈 Key Metrics</h5>
-                      <ul>
-                        {gtm.metrics.map((metric, i) => (
-                          <li key={i}>{metric}</li>
+                  {competitors.workarounds && competitors.workarounds.length > 0 && (
+                    <div className="workarounds-list full-width mt-4">
+                      <h5>🛠️ Manual Workarounds (Current Status Quo)</h5>
+                      <div className="evidence-grid">
+                        {competitors.workarounds.map((w, i) => (
+                          <div key={i} className="evidence-card">
+                            <strong>{w.method}</strong>
+                            <p className="mt-1">{w.painWithWorkaround}</p>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                 </div>
               )}
             </div>
           )
-        
-        case 3:
-          return pitchDeck && (
-            <div className="tab-content pitch-deck-tab">
-              {typeof pitchDeck === 'string' ? (
-                <p>{pitchDeck}</p>
+
+        case 2:
+          return gtmStrategy && (
+            <div className="tab-content">
+              {typeof gtmStrategy === 'string' ? (
+                <p>{gtmStrategy}</p>
               ) : (
-                <div className="pitch-deck-container">
-                  {/* Export buttons always visible */}
-                  <div className="pitch-deck-header">
-                    <h3>🎯 Pitch Deck</h3>
-                    <div className="export-options">
-                      <button className="export-btn google-slides" onClick={() => exportPitchDeck('google')}>
-                        📈 Google Slides
-                      </button>
-                      <button className="export-btn pdf" onClick={() => exportPitchDeck('pdf')}>
-                        📄 Export PDF
-                      </button>
-                    </div>
+                <div className="analysis-grid">
+                  <div className="content-block full-width highlight">
+                    <h5>🎯 Core Value Proposition</h5>
+                    <p>{gtmStrategy.valueProposition}</p>
                   </div>
                   
-                  {pitchDeck.executivesummary && (
-                    <div className="pitch-summary">
-                      <div className="summary-header">
-                        <h4>📋 Executive Summary</h4>
+                  <div className="target-audience full-width">
+                    <h5>👥 Target Audience</h5>
+                    <p>{gtmStrategy.targetAudience}</p>
+                  </div>
+
+                  {gtmStrategy.earlyUserCommunities && gtmStrategy.earlyUserCommunities.length > 0 && (
+                    <div className="communities-list full-width mt-4">
+                      <h5>🏕️ First 100 Users Strategy</h5>
+                      <div className="evidence-grid">
+                        {gtmStrategy.earlyUserCommunities.map((comm, i) => (
+                          <div key={i} className="evidence-card">
+                            <div className="flex-between">
+                              <strong>{comm.name}</strong>
+                              <span className="platform-tag">{comm.platform}</span>
+                            </div>
+                            <p className="mt-2 text-sm">{comm.strategy}</p>
+                          </div>
+                        ))}
                       </div>
-                      <p className="summary-text">{pitchDeck.executivesummary}</p>
                     </div>
                   )}
-                  
-                  {pitchDeck.slides && (
-                    <div className="slides-container">
-                      {pitchDeck.slides.map((slide, i) => (
-                        <div key={i} className="slide">
-                          <div className="slide-header-bar">
-                            <span className="slide-num">{slide.slideNumber}</span>
-                            <h3 className="slide-title">{slide.title}</h3>
-                            <div className="slide-indicator"></div>
+
+                  {gtmStrategy.channels && gtmStrategy.channels.length > 0 && (
+                    <div className="channels-list full-width mt-4">
+                      <h5>📣 Scalable Channels</h5>
+                      {gtmStrategy.channels.map((channel, i) => (
+                        <div key={i} className="channel-item">
+                          <div className="channel-header">
+                            <strong>{channel.channel || channel.name}</strong>
+                            <span className={`priority-badge ${channel.priority?.toLowerCase()}`}>{channel.priority}</span>
                           </div>
-                          
-                          <div className="slide-body">
-                            {slide.content.headline && (
-                              <div className="slide-headline">
-                                <h4>{slide.content.headline}</h4>
-                              </div>
-                            )}
-                            
-                            {/* Problem Slide */}
-                            {slide.title === 'Problem' && (
-                              <div className="slide-grid">
-                                {slide.content.painPoints && (
-                                  <div className="content-block">
-                                    <h5>😔 Key Pain Points</h5>
-                                    <ul>{slide.content.painPoints.map((p, j) => <li key={j}>{p}</li>)}</ul>
-                                  </div>
-                                )}
-                                {slide.content.marketSize && (
-                                  <div className="content-block highlight">
-                                    <h5>📊 Market Impact</h5>
-                                    <p>{slide.content.marketSize}</p>
-                                  </div>
-                                )}
-                                {slide.content.urgency && (
-                                  <div className="content-block">
-                                    <h5>⏰ Why Now</h5>
-                                    <p>{slide.content.urgency}</p>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            
-                            {/* Solution Slide */}
-                            {slide.title === 'Solution' && (
-                              <div className="slide-grid">
-                                {slide.content.keyFeatures && (
-                                  <div className="content-block">
-                                    <h5>✨ Key Features</h5>
-                                    <ul>{slide.content.keyFeatures.map((f, j) => <li key={j}>{f}</li>)}</ul>
-                                  </div>
-                                )}
-                                {slide.content.magicMoment && (
-                                  <div className="content-block highlight">
-                                    <h5>🎆 The Magic Moment</h5>
-                                    <p>{slide.content.magicMoment}</p>
-                                  </div>
-                                )}
-                                {slide.content.demo && (
-                                  <div className="content-block">
-                                    <h5>📱 Product Demo</h5>
-                                    <p>{slide.content.demo}</p>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            
-                            {/* Market Size Slide */}
-                            {slide.title === 'Market Size' && (
-                              <div className="market-metrics">
-                                <div className="metric-card tam">
-                                  <h5>TAM</h5>
-                                  <p>{slide.content.tam}</p>
-                                </div>
-                                <div className="metric-card sam">
-                                  <h5>SAM</h5>
-                                  <p>{slide.content.sam}</p>
-                                </div>
-                                <div className="metric-card som">
-                                  <h5>SOM</h5>
-                                  <p>{slide.content.som}</p>
-                                </div>
-                                {slide.content.growth && (
-                                  <div className="content-block full-width">
-                                    <h5>📈 Market Growth</h5>
-                                    <p>{slide.content.growth}</p>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            
-                            {/* Business Model Slide */}
-                            {slide.title === 'Business Model' && (
-                              <div className="slide-grid">
-                                <div className="content-block">
-                                  <h5>💰 Revenue Model</h5>
-                                  <p>{slide.content.revenueModel}</p>
-                                </div>
-                                <div className="content-block">
-                                  <h5>🏷️ Pricing</h5>
-                                  <p>{slide.content.pricing}</p>
-                                </div>
-                                {slide.content.unitEconomics && (
-                                  <div className="content-block highlight">
-                                    <h5>📊 Unit Economics</h5>
-                                    <p>{slide.content.unitEconomics}</p>
-                                  </div>
-                                )}
-                                {slide.content.revenueStreams && (
-                                  <div className="content-block">
-                                    <h5>💵 Revenue Streams</h5>
-                                    <ul>{slide.content.revenueStreams.map((r, j) => <li key={j}>{r}</li>)}</ul>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            
-                            {/* Traction Slide */}
-                            {slide.title === 'Traction' && (
-                              <div className="slide-grid">
-                                {slide.content.keyMetrics && (
-                                  <div className="content-block highlight">
-                                    <h5>📊 Key Metrics</h5>
-                                    <p>{slide.content.keyMetrics}</p>
-                                  </div>
-                                )}
-                                {slide.content.milestones && (
-                                  <div className="content-block">
-                                    <h5>🏆 Milestones</h5>
-                                    <ul>{slide.content.milestones.map((m, j) => <li key={j}>{m}</li>)}</ul>
-                                  </div>
-                                )}
-                                {slide.content.growth && (
-                                  <div className="content-block">
-                                    <h5>🚀 Growth Rate</h5>
-                                    <p>{slide.content.growth}</p>
-                                  </div>
-                                )}
-                                {slide.content.projections && (
-                                  <div className="content-block">
-                                    <h5>🔮 Projections</h5>
-                                    <p>{slide.content.projections}</p>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            
-                            {/* Generic content for other slides */}
-                            {!['Problem', 'Solution', 'Market Size', 'Business Model', 'Traction'].includes(slide.title) && (
-                              <div className="slide-grid">
-                                {Object.entries(slide.content).map(([key, value]) => {
-                                  if (key === 'headline') return null;
-                                  return (
-                                    <div key={key} className="content-block">
-                                      <h5>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</h5>
-                                      {Array.isArray(value) ? (
-                                        <ul>{value.map((item, j) => <li key={j}>{item}</li>)}</ul>
-                                      ) : (
-                                        <p>{value}</p>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
+                          <p>{channel.strategy}</p>
                         </div>
                       ))}
                     </div>
@@ -1091,216 +816,197 @@ function AnalysisResults({ idea, results, analysisType }) {
               )}
             </div>
           )
-        
-        case 4:
-          return risk && (
-            <div className="tab-content">
-              {typeof risk === 'string' ? (
-                <p>{risk}</p>
+
+        case 3:
+          return risks && (
+            <div className="tab-content risk-section">
+              {typeof risks === 'string' ? (
+                <p>{risks}</p>
               ) : (
-                <div className="risk-section">
-                  {/* Mortality Score */}
-                  {risk.mortalityScore && (
+                <>
+                  {risks.mortalityScore && (
                     <div className="mortality-overview">
                       <h5>💀 Startup Mortality Analysis</h5>
                       <div className="mortality-score">
-                        <span className="score">{risk.mortalityScore}</span>
+                        <span className="score">{risks.mortalityScore}</span>
                         <span className="score-label">Death Risk Score</span>
                       </div>
-                      {risk.primaryDeathRisk && <p className="primary-death-risk"><strong>Most Likely Death Scenario:</strong> {risk.primaryDeathRisk}</p>}
+                      {risks.primaryDeathRisk && <p className="primary-death-risk"><strong>Most Likely Death Scenario:</strong> {risks.primaryDeathRisk}</p>}
                     </div>
                   )}
 
-                  {/* Market Risks */}
-                  {risk.marketRisks && risk.marketRisks.length > 0 && (
-                    <div className="risk-category">
-                      <h6>📊 Market Risks</h6>
-                      {risk.marketRisks.map((r, i) => (
-                        <div key={i} className="enhanced-risk-card market">
-                          <div className="risk-header">
-                            <strong>{r.risk}</strong>
-                            <span className="probability">{r.probability}</span>
-                          </div>
-                          <p className="impact"><strong>Impact:</strong> {r.impact}</p>
-                          {r.mitigation && <p className="mitigation"><strong>Mitigation:</strong> {r.mitigation}</p>}
-                          {r.testable && <p className="testable"><strong>How to Test:</strong> {r.testable}</p>}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Execution Risks */}
-                  {risk.executionRisks && risk.executionRisks.length > 0 && (
-                    <div className="analysis-card execution-risks">
-                      <h5>🎯 Execution Risks</h5>
-                      <div className="risks-list">
-                        {risk.executionRisks.map((r, i) => (
-                          <div key={i} className="risk-item">
-                            <h6>{r.risk}</h6>
-                            <p><strong>Probability:</strong> {r.probability}</p>
-                            <p><strong>Impact:</strong> {r.impact}</p>
-                            {r.mitigation && <p><strong>Prevention:</strong> {r.mitigation}</p>}
-                            {r.earlyWarning && <p><strong>Warning Signs:</strong> {r.earlyWarning}</p>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Competitive Threats */}
-                  {risk.competitiveThreats && risk.competitiveThreats.length > 0 && (
-                    <div className="analysis-card competitive-threats">
-                      <h5>⚔️ Competitive Threats</h5>
-                      <div className="risks-list">
-                        {risk.competitiveThreats.map((t, i) => (
-                          <div key={i} className="risk-item">
-                            <h6>{t.threat}</h6>
-                            <p><strong>Timeline:</strong> {t.timeline}</p>
-                            {t.defensibility && <p><strong>Defensibility Score:</strong> {t.defensibility}/10</p>}
-                            {t.response && <p><strong>Counter-Strategy:</strong> {t.response}</p>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Critical Assumptions & Strategy */}
-                  <div className="assumptions-strategy-grid">
-                    {risk.criticalAssumptions && risk.criticalAssumptions.length > 0 && (
+                  <div className="assumptions-strategy-grid mt-4">
+                    {risks.criticalAssumptions && risks.criticalAssumptions.length > 0 && (
                       <div className="analysis-card critical-assumptions">
                         <h5>🎯 Critical Assumptions</h5>
                         <ul>
-                          {risk.criticalAssumptions.map((assumption, i) => (
+                          {risks.criticalAssumptions.map((assumption, i) => (
                             <li key={i}>{assumption}</li>
                           ))}
                         </ul>
                       </div>
                     )}
 
-                    {risk.survivalStrategy && (
+                    {risks.survivalStrategy && (
                       <div className="analysis-card survival-strategy">
                         <h5>🛡️ Survival Strategy</h5>
-                        <p>{risk.survivalStrategy}</p>
+                        <p>{risks.survivalStrategy}</p>
                       </div>
                     )}
                   </div>
 
-                  {/* Death Spiral Scenario */}
-                  {risk.deathSpiral && (
-                    <div className="analysis-card death-spiral">
-                      <h5>💀 Failure Scenario</h5>
-                      <p>{risk.deathSpiral}</p>
+                  {risks.marketRisks && risks.marketRisks.length > 0 && (
+                    <div className="risk-category mt-4">
+                      <h6>📊 Market Risks</h6>
+                      {risks.marketRisks.map((r, i) => (
+                        <div key={i} className="enhanced-risk-card market">
+                          <div className="risk-header">
+                            <strong>{r.risk}</strong>
+                            <span className="probability">{r.probability}</span>
+                          </div>
+                          {r.mitigation && <p className="mitigation"><strong>Mitigation:</strong> {r.mitigation}</p>}
+                        </div>
+                      ))}
                     </div>
                   )}
 
-                  {/* Legacy risk format for backward compatibility */}
-                  {risk.risks && risk.risks.map((r, i) => (
-                    <div key={i} className={`risk-card ${r.severity?.toLowerCase() || 'medium'}`}>
-                      <div className="risk-header">
-                        <strong>{r.risk || r.name}</strong>
-                        {r.severity && <span className="severity-badge">{r.severity}</span>}
-                      </div>
-                      {r.mitigation && <p className="mitigation">Mitigation: {r.mitigation}</p>}
-                    </div>
-                  ))}
-                  {risk.overallRisk && <p className="overall-risk">Overall Risk Level: <strong>{risk.overallRisk}</strong></p>}
-                </div>
-              )}
-            </div>
-          )
-        
-        case 5:
-          return checklist && (
-            <div className="tab-content">
-              {typeof checklist === 'string' ? (
-                <p>{checklist}</p>
-              ) : (
-                <div className="analysis-grid">
-                  {checklist.week1 && (
-                    <div className="checklist-group">
-                      <h5>📅 Week 1</h5>
-                      {checklist.week1.map((item, i) => {
-                        const itemId = `week1-${i}`
-                        const isChecked = checkedItems.has(itemId)
-                        return (
-                          <div 
-                            key={i} 
-                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
-                            onClick={() => toggleCheckItem(itemId)}
-                          >
-                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
-                            <span>{item.task || item.action || item.title || item}</span>
-                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                            {item.category && <span className="category-tag">{item.category}</span>}
+                  {risks.executionRisks && risks.executionRisks.length > 0 && (
+                    <div className="risk-category mt-4">
+                      <h6>🎯 Execution Risks</h6>
+                      {risks.executionRisks.map((r, i) => (
+                        <div key={i} className="enhanced-risk-card execution">
+                          <div className="risk-header">
+                            <strong>{r.risk}</strong>
+                            <span className="probability">{r.probability}</span>
                           </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                  {checklist.week2to4 && (
-                    <div className="checklist-group">
-                      <h5>📅 Weeks 2-4</h5>
-                      {checklist.week2to4.map((item, i) => {
-                        const itemId = `week2to4-${i}`
-                        const isChecked = checkedItems.has(itemId)
-                        return (
-                          <div 
-                            key={i} 
-                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
-                            onClick={() => toggleCheckItem(itemId)}
-                          >
-                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
-                            <span>{item.task || item.action || item.title || item}</span>
-                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                            {item.category && <span className="category-tag">{item.category}</span>}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                  {checklist.month2to3 && (
-                    <div className="checklist-group">
-                      <h5>📅 Months 2-3</h5>
-                      {checklist.month2to3.map((item, i) => {
-                        const itemId = `month2to3-${i}`
-                        const isChecked = checkedItems.has(itemId)
-                        return (
-                          <div 
-                            key={i} 
-                            className={`checklist-item ${isChecked ? 'checked' : ''}`}
-                            onClick={() => toggleCheckItem(itemId)}
-                          >
-                            <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
-                            <span>{item.task || item.action || item.title || item}</span>
-                            {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
-                            {item.category && <span className="category-tag">{item.category}</span>}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                  {!checklist.week1 && !checklist.week2to4 && !checklist.month2to3 && (
-                    (checklist.items || checklist.tasks || (Array.isArray(checklist) ? checklist : []))?.map?.((item, i) => {
-                      const itemId = `item-${i}`
-                      const isChecked = checkedItems.has(itemId)
-                      return (
-                        <div 
-                          key={i} 
-                          className={`checklist-item ${isChecked ? 'checked' : ''}`}
-                          onClick={() => toggleCheckItem(itemId)}
-                        >
-                          <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
-                          <span>{typeof item === 'object' ? (item.task || item.action || item.title) : item}</span>
-                          {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                          {r.earlyWarning && <p className="early-warning"><strong>Warning Signs:</strong> {r.earlyWarning}</p>}
                         </div>
-                      )
-                    })
+                      ))}
+                    </div>
                   )}
+
+                  {risks.competitiveThreats && risks.competitiveThreats.length > 0 && (
+                    <div className="risk-category mt-4">
+                      <h6>⚔️ Competitive Threats</h6>
+                      {risks.competitiveThreats.map((t, i) => (
+                        <div key={i} className="enhanced-risk-card competitor">
+                          <div className="risk-header">
+                            <strong>{t.threat}</strong>
+                            <span className="timeline">{t.timeline}</span>
+                          </div>
+                          {t.response && <p className="response"><strong>Response:</strong> {t.response}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )
+
+        case 4:
+          return executionPlan && (
+            <div className="tab-content">
+              {typeof executionPlan === 'string' ? (
+                <p>{executionPlan}</p>
+              ) : (
+                <div className="execution-grid">
+                  
+                  {/* PITCH DECK SECTION */}
+                  {executionPlan.pitchDeck && executionPlan.pitchDeck.slides && (
+                    <div className="pitch-deck-container mb-8">
+                      <div className="deck-header flex-between mb-4">
+                        <h4>🎤 Narrative / Pitch Deck</h4>
+                        <div className="export-actions">
+                          <button onClick={() => exportPitchDeck('pdf')} className="export-btn outline">
+                            📄 Export PDF
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {executionPlan.pitchDeck.executiveSummary && (
+                        <div className="executive-summary highlight mb-4">
+                          <strong>Executive Summary:</strong> {executionPlan.pitchDeck.executiveSummary}
+                        </div>
+                      )}
+
+                      <div className="slides-container">
+                        {executionPlan.pitchDeck.slides.map((slide, i) => (
+                          <div key={i} className="slide-card">
+                            <div className="slide-header">
+                              <span className="slide-number">{slide.slideNumber || i + 1}</span>
+                              <h5>{slide.title}</h5>
+                            </div>
+                            <div className="slide-content">
+                              {Object.entries(slide.content || {}).map(([key, value]) => {
+                                if (!value) return null;
+                                return (
+                                  <div key={key} className="slide-section mb-2">
+                                    <strong className="text-sm text-gray-400 block mb-1 uppercase tracking-wider">
+                                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                                    </strong>
+                                    {Array.isArray(value) ? (
+                                      <ul className="list-disc pl-5 mb-2">
+                                        {value.map((v, idx) => (
+                                          <li key={idx} className="text-sm mb-1">{v}</li>
+                                        ))}
+                                      </ul>
+                                    ) : (
+                                      <p className="text-sm">{value}</p>
+                                    )}
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* CHECKLIST SECTION */}
+                  {executionPlan.checklist && (
+                    <div className="checklist-container">
+                      <h4>✅ Next 90 Days Execution</h4>
+                      <div className="analysis-grid mt-4">
+                        {Object.entries(executionPlan.checklist).map(([period, items]) => {
+                          if (!items || !items.length) return null;
+                          const periodTitles = {
+                            week1: '📅 Week 1',
+                            week2to4: '📅 Weeks 2-4',
+                            month2to3: '📅 Months 2-3'
+                          }
+                          return (
+                            <div key={period} className="checklist-group">
+                              <h5>{periodTitles[period] || period}</h5>
+                              {items.map((item, i) => {
+                                const itemId = `${period}-${i}`
+                                const isChecked = checkedItems.has(itemId)
+                                return (
+                                  <div 
+                                    key={i} 
+                                    className={`checklist-item ${isChecked ? 'checked' : ''}`}
+                                    onClick={() => toggleCheckItem(itemId)}
+                                  >
+                                    <span className="checkbox">{isChecked ? '✓' : '☐'}</span>
+                                    <span>{item.task || item}</span>
+                                    {item.priority && <span className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</span>}
+                                    {item.category && <span className="category-tag">{item.category}</span>}
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  
                 </div>
               )}
             </div>
           )
-        
+
         default:
           return null
       }
@@ -1320,8 +1026,7 @@ function AnalysisResults({ idea, results, analysisType }) {
             </button>
           ))}
         </div>
-        
-        <div className="tab-panel">
+        <div className="tab-pane-container">
           {renderTabContent()}
         </div>
       </div>
