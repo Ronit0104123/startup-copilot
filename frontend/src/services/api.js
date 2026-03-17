@@ -1,18 +1,24 @@
 const BACKEND_URL = import.meta.env.VITE_API_URL || ''
 const API_BASE = `${BACKEND_URL}/api`
 
-export async function analyzeIdea(idea, type = 'tools') {
+export async function analyzeIdea(idea, type = 'tools', token = null) {
   const endpoints = {
     simple: '/analyze',
     agent: '/agent',
     tools: '/tools'
   }
 
+  const headers = {
+    'Content-Type': 'application/json'
+  }
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+
   const response = await fetch(`${API_BASE}${endpoints[type]}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers,
     body: JSON.stringify({ idea })
   })
 
@@ -24,10 +30,11 @@ export async function analyzeIdea(idea, type = 'tools') {
   return response.json()
 }
 
-export function analyzeIdeaWithProgress(idea, onProgress, onComplete, onError) {
+export function analyzeIdeaWithProgress(idea, onProgress, onComplete, onError, token = null) {
   const encodedIdea = encodeURIComponent(idea)
   const sseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-  const eventSource = new EventSource(`${sseUrl}/api/agent/stream?idea=${encodedIdea}`)
+  const tokenParam = token ? `&token=${encodeURIComponent(token)}` : ''
+  const eventSource = new EventSource(`${sseUrl}/api/agent/stream?idea=${encodedIdea}${tokenParam}`)
   
   eventSource.onmessage = (event) => {
     try {

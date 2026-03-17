@@ -13,10 +13,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.99.1",
     "@vercel/analytics": "^1.6.1",
     "@vitejs/plugin-react": "^5.1.4",
+    "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.1",
     "vite": "^7.3.1"
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom"
   }
 }
