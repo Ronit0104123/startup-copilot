@@ -118,6 +118,7 @@ function IdeaForm({ onSubmit, loading, analysisType, onTypeChange, session, hasU
                     }}
                     providers={['google']}
                     onlyThirdPartyProviders
+                    redirectTo={window.location.origin}
                   />
                 </div>
               </div>
