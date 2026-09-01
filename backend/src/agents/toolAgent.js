@@ -1,4 +1,4 @@
-import { ChatGroq } from "@langchain/groq";
+import { createChatModel } from "../config/models.js";
 import { HumanMessage, AIMessage, ToolMessage } from "@langchain/core/messages";
 import { competitorSearchTool, marketSizeTool } from "../tools/searchTools.js";
 
@@ -6,11 +6,7 @@ let modelWithTools = null;
 
 function getModelWithTools() {
   if (!modelWithTools) {
-    const model = new ChatGroq({
-      apiKey: process.env.GROQ_API_KEY,
-      model: "meta-llama/llama-4-scout-17b-16e-instruct",
-      temperature: 0.7,
-    });
+    const model = createChatModel({ temperature: 0.7 });
     
     modelWithTools = model.bindTools([competitorSearchTool, marketSizeTool]);
   }

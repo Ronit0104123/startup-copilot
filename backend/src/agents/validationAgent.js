@@ -1,4 +1,4 @@
-import { ChatGroq } from "@langchain/groq";
+import { createChatModel } from "../config/models.js";
 import {
   painSignalsTool,
   solutionSeekingTool,
@@ -11,11 +11,7 @@ import {
 let model = null;
 function getModel() {
   if (!model) {
-    model = new ChatGroq({
-      apiKey: process.env.GROQ_API_KEY,
-      model: "meta-llama/llama-4-scout-17b-16e-instruct",
-      temperature: 0.3,
-    });
+    model = createChatModel({ temperature: 0.3 });
   }
   return model;
 }
