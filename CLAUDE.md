@@ -79,9 +79,15 @@ backend/src/
 frontend/src/
   main.jsx                       Root render. React.StrictMode is ON (effects double-fire in dev).
   App.jsx                        Supabase session listener; routes.
+  index.css                      ★ THE ENTIRE DESIGN SYSTEM. Tokens in :root, then components.
+                                 Paper/ink palette, hairline rules, no gradients/shadows/glows.
+                                 Colour is reserved for demand verdicts and risk levels only.
+                                 Icons come from lucide-react — do not reintroduce emoji as UI.
   pages/Home.jsx                 Main screen. handleAnalyze() branches: SSE for 'agent', fetch otherwise.
+                                 STEPS is the single source of truth for the 5 stage names, shared
+                                 by the landing explainer and the live progress list.
   services/api.js                analyzeIdea() (POST/fetch) + analyzeIdeaWithProgress() (EventSource).
-  components/                    IdeaForm, AnalysisResults, ValidationResults
+  components/                    IdeaForm, AnalysisResults
   lib/supabaseClient.js          Anon-key browser client.
 ```
 

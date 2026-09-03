@@ -1,7 +1,5 @@
 import { supabase } from '../lib/supabaseClient.js';
 
-const MAX_FREE_CALLS = 10;
-
 export const requireAuth = async (req, res, next) => {
     try {
         let token = req.headers.authorization?.split(' ')[1];
@@ -32,29 +30,9 @@ export const requireAuth = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid or expired token' });
         }
 
-        // Check rate limits
-        const { data: userData, error: dbError } = await supabase
-            .from('users')
-            .select('plan, llm_calls_count')
-            .eq('id', user.id)
-            .single();
-
-        if (dbError && dbError.code !== 'PGRST116') {
-            console.error('Database error checking limits:', dbError);
-            // Allow if DB fails just in case, or block. Usually better to block if it's a strict quota.
-            // But since this is a new setup, let's just log it.
-        }
-
-        if (userData) {
-            if (userData.plan === 'free' && userData.llm_calls_count >= MAX_FREE_CALLS) {
-                return res.status(403).json({ 
-                    error: `You have reached your limit of ${MAX_FREE_CALLS} free AI analysis runs. Please upgrade.` 
-                });
-            }
-        }
-
+        // No quota enforcement for signed-in users — incrementUsage() still
+        // tracks llm_calls_count per run for analytics.
         req.user = user;
-        req.userData = userData;
         next();
     } catch (err) {
         console.error('Auth middleware error:', err);

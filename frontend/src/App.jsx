@@ -26,7 +26,7 @@ function App() {
   }, [])
 
   if (loading) {
-    return <div className="loading"><div className="spinner"></div></div>
+    return <div className="boot"><div className="spinner" role="status" aria-label="Loading" /></div>
   }
 
   return (

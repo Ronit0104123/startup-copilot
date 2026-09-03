@@ -23,8 +23,8 @@ export const painSignalsTool = new DynamicTool({
     try {
       const client = getTavilyClient();
       const queries = [
-        `"${query}" complaints frustration reddit India`,
-        `"${query}" problem hate annoying forum India`,
+        `${query} complaints frustration reddit India`,
+        `${query} problem hate annoying forum India`,
       ];
 
       let allResults = [];
