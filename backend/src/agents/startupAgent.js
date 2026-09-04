@@ -296,7 +296,8 @@ async function competitorNode(state) {
       {
         role: "system",
         content: `You conduct competitive due diligence. Analyze the real web search data for existing tools, competitors, and manual workarounds.
-Extract real companies and failure cases — do not invent competitors that aren't in the evidence.`,
+
+List every competitor confirmed in the search evidence below. You may also name additional real companies you are genuinely confident compete in this exact space, even if the search evidence didn't happen to surface them — search results sometimes under-index a real competitor that markets itself with different vocabulary than this vertical's usual terms (e.g. a horizontal AI platform that also sells into this space but doesn't brand around it). Only add a company this way if you are highly confident it is real and actually competes here; never invent one you are not sure exists.`,
       },
       {
         role: "user",
