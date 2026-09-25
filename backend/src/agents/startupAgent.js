@@ -152,6 +152,21 @@ function countVerifiedCitations(marketValidation) {
   return [...pain, ...seeking].filter((item) => item.verified).length;
 }
 
+function searchStatus(...rawToolResults) {
+  const searches = rawToolResults.map((raw) => {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return { source: "error", results: [] };
+    }
+  });
+
+  return {
+    failed: searches.filter((search) => search.source === "error").length,
+    results: searches.reduce((count, search) => count + (search.results?.length || 0), 0),
+  };
+}
+
 // The number of confirmed-real citations the first pass found, below which
 // a retry is worth the extra call. Tried gating this on raw Tavily result
 // *count* first — that failed empirically: a deliberately obscure test idea
@@ -202,11 +217,25 @@ Default context: India. Base your analysis completely on this real evidence.`,
 // rounds of evidence, and re-synthesizes once — rather than shipping a
 // verdict the model itself had almost nothing real to support.
 async function gatherAndSynthesizeMarketValidation(idea, painRaw, seekingRaw, demandRaw) {
+  const initialSearch = searchStatus(painRaw, seekingRaw, demandRaw);
+  if (initialSearch.failed === 3) {
+    return {
+      error: "Live research is temporarily unavailable. No market verdict was generated.",
+    };
+  }
+
   const first = await synthesizeMarketValidation(idea, painRaw, seekingRaw, demandRaw);
   const firstYield = countVerifiedCitations(first);
 
+  if (initialSearch.results === 0) {
+    first.researchNote = "The search completed but did not return usable public evidence for this idea. Treat this as an inconclusive result, not a negative verdict.";
+    return first;
+  }
+
   if (firstYield >= MIN_VERIFIED_CITATIONS) {
-    first.researchNote = null;
+    first.researchNote = initialSearch.failed
+      ? `${initialSearch.failed} of 3 research sources did not respond, so this verdict is based on partial evidence.`
+      : null;
     return first;
   }
 

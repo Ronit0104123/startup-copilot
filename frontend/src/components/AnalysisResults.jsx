@@ -230,6 +230,14 @@ function AnalysisResults({ idea, results, analysisType }) {
       () => {
         const mv = marketValidation
         if (typeof mv === 'string') return <p className="prose">{mv}</p>
+        if (mv?.error) {
+          return (
+            <section className="block">
+              <h3 className="block-title">Market research unavailable</h3>
+              <p className="prose muted">{mv.error}</p>
+            </section>
+          )
+        }
         const demand = mv.demandScore
         const market = mv.marketAnalysis
         const pain = mv.evidence?.painSignals || []

@@ -6,6 +6,7 @@ import { createStartupAgent, runAgentWithProgress } from './agents/startupAgent.
 import { runWithTools } from './agents/toolAgent.js';
 import { createGoogleSlidesPresentation } from './services/googleSlides.js';
 import { requireAuth, incrementUsage } from './middleware/auth.js';
+import { validateIdea } from './lib/requestValidation.js';
 
 dotenv.config();
 
@@ -41,11 +42,11 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/analyze', requireAuth, async (req, res) => {
-    const idea = req.body.idea;
-    
-    if (!idea) {
-        return res.status(400).json({ error: "No idea provided" });
+    const validation = validateIdea(req.body?.idea);
+    if (!validation.valid) {
+        return res.status(400).json({ error: validation.error });
     }
+    const { idea } = validation;
     
     try {
         const result = await analyzeIdea(idea);
@@ -58,11 +59,11 @@ app.post('/api/analyze', requireAuth, async (req, res) => {
 });
 
 app.post('/api/agent', requireAuth, async (req, res) => {
-    const idea = req.body.idea;
-    
-    if (!idea) {
-        return res.status(400).json({ error: "No idea provided" });
+    const validation = validateIdea(req.body?.idea);
+    if (!validation.valid) {
+        return res.status(400).json({ error: validation.error });
     }
+    const { idea } = validation;
     
     try {
         console.log('🚀 Starting Startup Agent for:', idea);
@@ -80,11 +81,11 @@ app.post('/api/agent', requireAuth, async (req, res) => {
 });
 
 app.get('/api/agent/stream', requireAuth, async (req, res) => {
-    const idea = req.query.idea;
-    
-    if (!idea) {
-        return res.status(400).json({ error: "No idea provided" });
+    const validation = validateIdea(req.query.idea);
+    if (!validation.valid) {
+        return res.status(400).json({ error: validation.error });
     }
+    const { idea } = validation;
     
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -109,11 +110,11 @@ app.get('/api/agent/stream', requireAuth, async (req, res) => {
 });
 
 app.post('/api/tools', requireAuth, async (req, res) => {
-    const idea = req.body.idea;
-    
-    if (!idea) {
-        return res.status(400).json({ error: "No idea provided" });
+    const validation = validateIdea(req.body?.idea);
+    if (!validation.valid) {
+        return res.status(400).json({ error: validation.error });
     }
+    const { idea } = validation;
     
     try {
         console.log('🔧 Starting Tool Agent for:', idea);
