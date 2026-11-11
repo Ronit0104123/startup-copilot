@@ -1,5 +1,5 @@
 import { StateGraph, END } from "@langchain/langgraph";
-import { createChatModel } from "../config/models.js";
+import { createChatModel, invokeWithRetry } from "../config/models.js";
 import {
   painSignalsTool,
   solutionSeekingTool,
@@ -179,7 +179,7 @@ function searchStatus(...rawToolResults) {
 const MIN_VERIFIED_CITATIONS = 2;
 
 async function synthesizeMarketValidation(idea, painRaw, seekingRaw, demandRaw) {
-  const parsed = await structured(marketValidationSchema, "market_validation").invoke([
+  const parsed = await invokeWithRetry(structured(marketValidationSchema, "market_validation"), [
     {
       role: "system",
       content: `You are a tough startup advisor evaluating problem-solution fit and market demand.
@@ -244,7 +244,7 @@ async function gatherAndSynthesizeMarketValidation(idea, painRaw, seekingRaw, de
   );
 
   try {
-    const { broaderPhrase } = await structured(broadenQuerySchema, "broaden_query").invoke([
+    const { broaderPhrase } = await invokeWithRetry(structured(broadenQuerySchema, "broaden_query"), [
       {
         role: "system",
         content:
@@ -321,7 +321,7 @@ async function competitorNode(state) {
 
   // 2. Synthesize using the LLM
   try {
-    const parsed = await structured(competitorsSchema, "competitive_landscape").invoke([
+    const parsed = await invokeWithRetry(structured(competitorsSchema, "competitive_landscape"), [
       {
         role: "system",
         content: `You conduct competitive due diligence. Analyze the real web search data for existing tools, competitors, and manual workarounds.
@@ -367,7 +367,7 @@ async function gtmNode(state) {
 
   // 2. Synthesize using the LLM
   try {
-    const parsed = await structured(gtmStrategySchema, "gtm_strategy").invoke([
+    const parsed = await invokeWithRetry(structured(gtmStrategySchema, "gtm_strategy"), [
       {
         role: "system",
         content: `You are a go-to-market strategist. Create a launch plan explicitly targeting the real communities found in the web search.`,
@@ -405,7 +405,7 @@ async function riskNode(state) {
   console.log("⚠️ Step 4/5: Startup Mortality Analysis...");
 
   try {
-    const parsed = await structured(risksSchema, "risk_assessment").invoke([
+    const parsed = await invokeWithRetry(structured(risksSchema, "risk_assessment"), [
       {
         role: "system",
         content: `You are a startup forensics expert. Based on the gathered market, competitor, and GTM data, identify exact failure modes.`,
@@ -439,7 +439,7 @@ async function executionNode(state) {
   console.log("✅ Step 5/5: Creating Execution Plan & Pitch Deck...");
 
   try {
-    const parsed = await structured(executionPlanSchema, "execution_plan").invoke([
+    const parsed = await invokeWithRetry(structured(executionPlanSchema, "execution_plan"), [
       {
         role: "system",
         content: `You are an execution coach. Synthesize all the research into an actionable checklist AND a 6-slide investor pitch deck narrative.
@@ -520,4 +520,4 @@ export async function runAgentWithProgress(idea, onProgress) {
   state = await executionNode(state);
 
   return state;
-}
+              }
