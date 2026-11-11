@@ -167,7 +167,7 @@ function Home({ session }) {
           <div className="hero-meta">
             <span>17 web searches per run</span>
             <span>Default market: India</span>
-            <span>Around two minutes</span>
+            <span>A few minutes</span>
           </div>
         </section>
 
