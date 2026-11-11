@@ -67,3 +67,64 @@ export function createChatModel({ temperature = 0.7 } = {}) {
     ...tempOpt,
   });
 }
+
+// ─── Rate-limit-aware retry ────────────────────────────────────────────────
+// The hosted providers this app runs on enforce per-minute token budgets
+// (Groq's free tier is 8,000 TPM for gpt-oss-120b). A 5-stage deep-research
+// run can burst past that window, and the providers answer with a 429 whose
+// message names the exact wait ("Please try again in 19.33s"). Until this
+// wrapper existed, that 429 was caught by the stage's catch and stored as
+// { error }, which the UI rendered as a blank tab. Now we wait out the
+// window the provider itself specifies and retry, so a busy minute slows the
+// run down instead of silently dropping stages.
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function parseRetryAfterMs(message) {
+  const m = /try again in\s+([\d.]+)\s*(ms|s|m)\b/i.exec(message || "");
+  if (!m) return null;
+  const n = parseFloat(m[1]);
+  const unit = m[2].toLowerCase();
+  return unit === "ms" ? n : unit === "m" ? n * 60000 : n * 1000;
+}
+
+/**
+ * Invoke a chat model / structured-output runnable with retries for
+ * transient failures: 429 rate limits (waiting the provider-suggested
+ * delay), 5xx, and network resets. Permanent errors (4xx other than 429)
+ * are thrown immediately.
+ *
+ * @param {{ invoke: Function }} runnable
+ * @param {any} messages
+ * @param {{ maxAttempts?: number }} opts
+ */
+export async function invokeWithRetry(runnable, messages, { maxAttempts = 5 } = {}) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await runnable.invoke(messages);
+    } catch (e) {
+      const msg = String(e?.message || e);
+      const status = e?.status ?? e?.statusCode;
+      const rateLimited =
+        status === 429 || msg.startsWith("429") || /rate.?limit/i.test(msg);
+      const serverError = typeof status === "number" && status >= 500;
+      const network = /ECONNRESET|ETIMEDOUT|fetch failed|socket hang up/i.test(msg);
+
+      if ((!rateLimited && !serverError && !network) || attempt >= maxAttempts) {
+        throw e;
+      }
+
+      const suggested = parseRetryAfterMs(msg);
+      // Cap at 70s: per-minute windows always free up within a minute.
+      const wait = Math.min(
+        (suggested ?? Math.min(15000 * attempt, 45000)) + 1500,
+        70000
+      );
+      console.warn(
+        `⏳ LLM call failed (attempt ${attempt}/${maxAttempts}): ${
+          rateLimited ? "provider rate limit" : msg.slice(0, 120)
+        }. Retrying in ${Math.round(wait / 1000)}s...`
+      );
+      await sleep(wait);
+    }
+  }
+}
