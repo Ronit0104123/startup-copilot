@@ -1,4 +1,4 @@
-import { createChatModel } from "../config/models.js";
+import { createChatModel, invokeWithRetry } from "../config/models.js";
 
 let model = null;
 
@@ -23,7 +23,7 @@ function cleanJsonResponse(text) {
 }
 
 export async function analyzeIdea(idea) {
-  const response = await getModel().invoke([
+  const response = await invokeWithRetry(getModel(), [
     {
       role: "system",
       content: `You are a startup advisor. Analyze startup ideas concisely.
