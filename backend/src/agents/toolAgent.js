@@ -1,4 +1,4 @@
-import { createChatModel } from "../config/models.js";
+import { createChatModel, invokeWithRetry } from "../config/models.js";
 import { HumanMessage, AIMessage, ToolMessage } from "@langchain/core/messages";
 import { competitorSearchTool, marketSizeTool } from "../tools/searchTools.js";
 
@@ -32,7 +32,7 @@ After gathering data, provide a comprehensive analysis.`)
 
   console.log("🤖 Starting tool-enabled agent...");
   
-  let response = await model.invoke(messages);
+  let response = await invokeWithRetry(model, messages);
   messages.push(response);
   
   while (response.tool_calls && response.tool_calls.length > 0) {
@@ -56,7 +56,7 @@ After gathering data, provide a comprehensive analysis.`)
       }));
     }
     
-    response = await model.invoke(messages);
+    response = await invokeWithRetry(model, messages);
     messages.push(response);
   }
   
