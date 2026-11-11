@@ -65,6 +65,23 @@ function humanise(key) {
   return key.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase()).trim()
 }
 
+/* A stage that failed on the backend comes back as { error }. Every tab must
+   say so plainly instead of rendering blank - and never dump the raw provider
+   error (a 429 JSON blob) at the user. */
+function StageError({ title, error }) {
+  const rateLimited = /rate.?limit|429/i.test(String(error))
+  return (
+    <section className="block">
+      <h3 className="block-title">{title}</h3>
+      <p className="prose muted">
+        {rateLimited
+          ? 'This step hit the AI provider\u2019s rate limit and didn\u2019t finish. Wait a minute and run the research again. The other tabs are unaffected.'
+          : 'This step didn\u2019t finish, so there\u2019s nothing to show here yet. The other tabs are unaffected.'}
+      </p>
+    </section>
+  )
+}
+
 function AnalysisResults({ idea, results, analysisType }) {
   const [activeTab, setActiveTab] = useState(0)
   const [checkedItems, setCheckedItems] = useState(new Set())
@@ -231,12 +248,7 @@ function AnalysisResults({ idea, results, analysisType }) {
         const mv = marketValidation
         if (typeof mv === 'string') return <p className="prose">{mv}</p>
         if (mv?.error) {
-          return (
-            <section className="block">
-              <h3 className="block-title">Market research unavailable</h3>
-              <p className="prose muted">{mv.error}</p>
-            </section>
-          )
+          return <StageError title="Market research unavailable" error={mv.error} />
         }
         const demand = mv.demandScore
         const market = mv.marketAnalysis
@@ -338,6 +350,9 @@ function AnalysisResults({ idea, results, analysisType }) {
       () => {
         const c = competitors
         if (typeof c === 'string') return <p className="prose">{c}</p>
+        if (c?.error) {
+          return <StageError title="Competitor research unavailable" error={c.error} />
+        }
         return (
           <>
             {c.marketGap && (
@@ -447,6 +462,9 @@ function AnalysisResults({ idea, results, analysisType }) {
       () => {
         const g = gtmStrategy
         if (typeof g === 'string') return <p className="prose">{g}</p>
+        if (g?.error) {
+          return <StageError title="Go-to-market plan unavailable" error={g.error} />
+        }
         return (
           <>
             {g.valueProposition && (
@@ -514,6 +532,9 @@ function AnalysisResults({ idea, results, analysisType }) {
       () => {
         const r = risks
         if (typeof r === 'string') return <p className="prose">{r}</p>
+        if (r?.error) {
+          return <StageError title="Risk analysis unavailable" error={r.error} />
+        }
 
         const groups = [
           ['Market risks', r.marketRisks, 'probability', 'mitigation', 'Mitigation'],
@@ -594,6 +615,9 @@ function AnalysisResults({ idea, results, analysisType }) {
       () => {
         const e = executionPlan
         if (typeof e === 'string') return <p className="prose">{e}</p>
+        if (e?.error) {
+          return <StageError title="Execution plan unavailable" error={e.error} />
+        }
         const deck = e.pitchDeck
         const periodTitles = {
           week1: 'Week 1',
@@ -690,8 +714,19 @@ function AnalysisResults({ idea, results, analysisType }) {
       },
     ]
 
+    const failedTabs = tabs.filter(([, data]) => data?.error).map(([label]) => label)
+
     return (
       <>
+        {failedTabs.length > 0 && (
+          <div className="notice" data-tone="error" role="alert">
+            <p>
+              {failedTabs.length === 5
+                ? 'The research could not finish this time. Each tab explains what happened.'
+                : `${failedTabs.join(', ')} ${failedTabs.length > 1 ? 'steps' : 'step'} didn't finish. The other tabs are complete.`}
+            </p>
+          </div>
+        )}
         <div className="tabs" role="tablist">
           {tabs.map(([label, data], i) => (
             <button
