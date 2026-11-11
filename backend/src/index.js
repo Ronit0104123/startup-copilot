@@ -92,10 +92,15 @@ app.get('/api/agent/stream', requireAuth, async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.flushHeaders();
-    
+
+    // Rate-limit retries can leave minutes between real events. Proxies and
+    // browsers drop idle SSE connections, so send a comment heartbeat.
+    const heartbeat = setInterval(() => res.write(`: ping\n\n`), 20000);
+    req.on('close', () => clearInterval(heartbeat));
+
     try {
         console.log('🚀 Starting Streaming Agent for:', idea);
-        
+
         const result = await runAgentWithProgress(idea, (progress) => {
             res.write(`data: ${JSON.stringify({ type: 'progress', ...progress })}\n\n`);
         });
@@ -106,6 +111,8 @@ app.get('/api/agent/stream', requireAuth, async (req, res) => {
         console.error('Streaming Agent Error:', error.message);
         res.write(`data: ${JSON.stringify({ type: 'error', message: getFriendlyErrorMessage(error) })}\n\n`);
         res.end();
+    } finally {
+        clearInterval(heartbeat);
     }
 });
 
